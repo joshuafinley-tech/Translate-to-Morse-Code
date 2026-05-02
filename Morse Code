@@ -1,0 +1,77 @@
+# if changes are made, save the command before running it 
+
+from asyncio import Handle
+import winsound
+import time
+
+frequency = 800 # Set Frequency To 800 Hertz
+unit = 120 # Set Duration To 120 ms == 0.12 second
+
+# These two lists give the characters an index that the program uses to convert the text to morse code.
+characters = (" ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+conversion = (" ", ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--..", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----.", "-----")
+
+# this function converts characters to code
+def translate(text):
+    morse_code = "" # clears the stored code from previous input
+    for char in text: # for each character it does this
+        if char.lower() in characters: # lowers and checks if the character is in the list
+            index = characters.index(char.lower()) # finds the index in the characters list
+            morse_code += conversion[index] + " " # adds the code based on each index given
+        else:
+            morse_code += "? "  # For characters not in the conversion list
+    return morse_code
+
+# a function that holds changable parameters influenced by commands is a funtion's list
+def handle_command(text, volume): # text sets the true or false of should continue and volume holds the numeric volume level
+    if text.lower() == "/exit": # returns false for should_continute if /exit is entered
+        return False, volume
+    elif text.startswith("/volume "): # I think this needs to be fixed, but it is supposed to be able to change the volume
+        try:
+            volume = int(text.split("/volume ")[1])
+            print(f"Volume set to {volume}")
+        except (ValueError, IndexError): #error handling for invalid volume input
+            print("Invalid volume. Usage: /volume <number>")
+        return True, volume
+    return True, volume # returns true for should_continue and volume level
+
+# audio playing function
+def play_morse_code(morse_code, volume):
+    print("Playing morse code... (commands will be available after playback)")
+    
+    # I still need to fix the timing of the audio, especially the pauses
+    for symbol in morse_code: # does this for each symbol in the morse code
+        if symbol == ".": 
+            winsound.Beep(frequency, unit) # Short duration beep for dots
+            time.sleep(unit/1000)  # Pause between symbols
+        elif symbol == "-":
+            winsound.Beep(frequency, unit*3) # Longer duration beep for dashes
+            time.sleep(unit/1000)  # Pause between symbols
+        elif symbol == " ":
+            time.sleep(unit*3/1000)  # Pause between letters
+        else:
+            print("Unknown symbol:", symbol) # don't know what I want to do with this yet
+    
+    return True  # Continue main loop
+
+volume = 50
+
+#MAIN LOOP
+while True:
+    text = input("Enter text to convert to Morse code (or use / commands like '/volume #' or '/exit'): ")
+    
+    # Check for / commands first
+    if text.startswith("/"):
+        should_continue, volume = handle_command(text, volume) # ties should_continue to text and volume to volume
+        if not should_continue:
+            break
+        continue
+    
+    # Regular text - translate and play
+    morse_code = translate(text)
+    print("Morse code:", morse_code.strip()) # prints translation
+    should_continue = play_morse_code(morse_code, volume) # plays the code out loud at the set volume
+    if not should_continue:
+        break
+
+    # then loops and shows menu again
