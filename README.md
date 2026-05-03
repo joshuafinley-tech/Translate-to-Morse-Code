@@ -16,3 +16,11 @@ I still want my my program to be able to effficiently take inputed text and tran
 Some of the changes that I have made to the program include making some of my notes formated more clearly. I have completely fixed the audio timing. I also added some more acceptable commands for exiting the program like "/quit" or "/stop". I could not find a way to fix the volume problems yet so I am still working on that. I will have to search online for some more solutions because apparently winsound can't control volume.  
 
 I did use a bit of the AI chat assistance to help me look for where exacly the problem was for the audio timing and how I should go about fixing those problems, but I belive that I had asked you about if it was fine to get some assistance from the chatbot and I belive you said it was fine as long as we weren't souly just turning in ai work. which I am not. It did teach me about the enumerate function, and how it is supposed to give an index to each specified entity. I used it to seperate the imput text into words, letters, and symbols for my audio function. I hope that this is still fine with you. I don't want to add the enumerate to the translate function however because it already works correctly and I remember a saying that says "don't fix what's not broken" or somthing like that. 
+
+
+(Final checkpoint)
+This program will allow you to enter text and numbers in the imput, and it will translate the imput and play Morse Code audio. In addition, there are some commands that users can use:
+    /exit, /quit, /stop, /end, /break - Exit the program
+    /help - Show help menu
+    /replay - Replay the last played Morse code
+My program Morse Code program Master “while” loop, changes the items in lists and sets, uses many string methods, contains 3 self-made functions, and directly handles NameError (indirectly handling many other errors).

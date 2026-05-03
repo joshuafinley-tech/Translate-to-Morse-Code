@@ -1,0 +1,118 @@
+
+# if changes are made, save the command before running it 
+
+import winsound
+import time
+
+frequency = 800 # Set Frequency To 800 Hertz
+
+unit = 240 # Set Duration To 240 ms == 0.24 second
+# the pause timing only seems to work correctly when the units are higher so I could not operate the program on 120 ms or 60 ms
+
+# These two lists give the characters an index that the program uses to convert the text to morse code.
+characters = (" ", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0")
+conversion = (" ", ".-", "-...", "-.-.", "-..", ".", "..-.", "--.", "....", "..", ".---", "-.-", ".-..", "--", "-.", "---", ".--.", "--.-", ".-.", "...", "-", "..-", "...-", ".--", "-..-", "-.--", "--..", ".----", "..---", "...--", "....-", ".....", "-....", "--...", "---..", "----.", "-----")
+
+# this function converts characters to code
+def translate(text):
+
+    # clears the stored code from previous input
+    morse_code = "" 
+
+    # for each character it does this
+    for char in text: 
+        
+        # lowers and checks if the character is in the list
+        if char.lower() in characters: 
+            index = characters.index(char.lower()) # finds the index in the characters list
+            morse_code += conversion[index] + " " # adds the code based on each index given
+        else:
+            morse_code += "? "  # For characters not in the conversion list
+
+    return morse_code
+
+# a function that holds changable parameters influenced by commands is a funtion's list
+def handle_command(text): # text sets the true or false of should continue
+    
+    # returns false for should_continute if /exit or /quit or /stop or /end or /break is entered
+    if text.lower() == "/exit" or text.lower() == "/quit" or text.lower() == "/stop" or text.lower() == "/end" or text.lower() == "/break": 
+        return False
+    elif text.lower() == "/replay": # this will replay the last played morse code
+        try:
+            print("Replaying last morse code...")
+            play_morse_code(morse_code)
+        except NameError: # handles the error if no morse code was stored yet
+            print("No morse code has been played yet. Please enter text to play first.")
+            return True
+    elif text.lower() == "/help": # this is supposed to show a help menu with all the commands
+        print("Available commands:")
+        print("/exit, /quit, /stop, /end, /break - Exit the program")
+        print("/help - Show this help menu")
+        print("/replay - Replay the last played Morse code")  
+    else:
+        print("Unknown command") # to handle unknown / commands
+
+    return True # returns true for should_continue
+
+# audio playing function
+def play_morse_code(morse_code):
+    print("Playing morse code... (other functions will be available after playback)")
+    
+    # this is supposed to give an index to each word and seperate them with spaces
+    words = morse_code.strip().split('  ')
+    for word_index, word in enumerate(words):
+        
+        # this is supposed to give an index to each letter within each word and seperate them with spaces
+        letters = word.split(' ')
+        for letter_index, letter in enumerate(letters):
+           
+            # this gives an index for each code symbol within each letter and plays the sound outloud
+            for symbol_index, char in enumerate(letter):
+                if char == ".":
+                    winsound.Beep(frequency, unit) # - dot = 1 unit
+                elif char == "-":
+                    winsound.Beep(frequency, unit * 3) # - dash = 3 units
+                else:
+                    print("Unknown symbol:", char) # to handle unknown characters
+                    continue
+
+                # this basically checks if it has read the last symbol if it has then it will skip this pause type
+                if symbol_index < len(letter) - 1:
+                    time.sleep(unit / 1000) # - pause between symbols in a letter = 1 unit
+
+            # check if at the last letter in the word, if not then it will do the pause between letters
+            if letter_index < len(letters) - 1:
+                time.sleep(unit * 3 / 1000) # - pause between letters = 3 units
+
+        #check if there are still more words to read and if True then will pause between words
+        if word_index < len(words) - 1:
+            time.sleep(unit * 7 / 1000) # - pause between words = 7 units
+
+    return True  # Continue main loop
+
+
+
+#MAIN LOOP
+while True:
+    text = input("Enter text to convert to Morse code and play audio (or use / commands like '/exit' or '/help'): ")
+    
+    # Check for / commands first
+    if text.startswith("/"):
+        should_continue = handle_command(text) # ties should_continue to text
+        if not should_continue:
+            break
+        continue
+    
+    # translates regular text to morse code
+    morse_code = translate(text)
+    
+    # prints translation
+    print("Morse code:", morse_code.strip()) 
+    
+    # plays the code out loud
+    should_continue = play_morse_code(morse_code) 
+    
+    if not should_continue:
+        break
+
+    # then loops and shows menu again
