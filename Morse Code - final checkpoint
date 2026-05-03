@@ -39,10 +39,11 @@ def handle_command(text): # text sets the true or false of should continue
         return False
     elif text.lower() == "/replay": # this will replay the last played morse code
         try:
-            print("Replaying last morse code...")
+            print("Replaying last Morse Code...")
+            print("Morse Code:", morse_code.strip())
             play_morse_code(morse_code)
         except NameError: # handles the error if no morse code was stored yet
-            print("No morse code has been played yet. Please enter text to play first.")
+            print("No Morse Code has been played yet. Please enter text to play first.")
             return True
     elif text.lower() == "/help": # this is supposed to show a help menu with all the commands
         print("Available commands:")
@@ -56,7 +57,7 @@ def handle_command(text): # text sets the true or false of should continue
 
 # audio playing function
 def play_morse_code(morse_code):
-    print("Playing morse code... (other functions will be available after playback)")
+    print("Playing Morse Code... (other functions will be available after playback)")
     
     # this is supposed to give an index to each word and seperate them with spaces
     words = morse_code.strip().split('  ')
@@ -94,25 +95,31 @@ def play_morse_code(morse_code):
 
 #MAIN LOOP
 while True:
-    text = input("Enter text to convert to Morse code and play audio (or use / commands like '/exit' or '/help'): ")
+    text = input("Enter text to convert to Morse Code and play audio (or use / commands like '/exit' or '/help'): ")
     
-    # Check for / commands first
-    if text.startswith("/"):
-        should_continue = handle_command(text) # ties should_continue to text
+    # this will make it so that if nothing is entered, then nothing will be changed
+    if text != "": 
+
+        # Check for / commands first
+        if text.startswith("/"):
+            should_continue = handle_command(text) # ties should_continue to text
+            if not should_continue:
+                break
+            print()  # Add a blank line for better readability between iterations
+            continue
+        
+        # translates regular text to morse code
+        morse_code = translate(text)
+        
+        # prints translation
+        print("Morse Code:", morse_code.strip()) 
+        
+        # plays the code out loud
+        should_continue = play_morse_code(morse_code) 
+        
         if not should_continue:
             break
-        continue
-    
-    # translates regular text to morse code
-    morse_code = translate(text)
-    
-    # prints translation
-    print("Morse code:", morse_code.strip()) 
-    
-    # plays the code out loud
-    should_continue = play_morse_code(morse_code) 
-    
-    if not should_continue:
-        break
+
+        print()  # Add a blank line for better readability between iterations
 
     # then loops and shows menu again
