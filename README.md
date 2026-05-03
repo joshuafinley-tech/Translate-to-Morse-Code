@@ -20,7 +20,7 @@ I did use a bit of the AI chat assistance to help me look for where exacly the p
 
 (Final checkpoint)
 This program will allow you to enter text and numbers in the imput, and it will translate the imput and play Morse Code audio. In addition, there are some commands that users can use:
-    /exit, /quit, /stop, /end, /break - Exit the program
-    /help - Show help menu
-    /replay - Replay the last played Morse code
+    /exit, /quit, /stop, /end, /break - Exit the program;
+    /help - Show help menu;
+    /replay - Replay the last played Morse code;
 My program Morse Code program Master “while” loop, changes the items in lists and sets, uses many string methods, contains 3 self-made functions, and directly handles NameError (indirectly handling many other errors).
